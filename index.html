@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GYSTC — Get Your Shit Together, Claude.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A local MCP server that gives Claude persistent long-term memory across sessions, projects, and months. Free EXE download.">
+<meta property="og:title" content="GYSTC — Get Your Shit Together, Claude.">
+<meta property="og:description" content="Your AI forgets everything. Every. Single. Session. This fixes that.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gystc.dev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --fg:#e0e0e0;
+    --dim:#7a7a7a;
+    --faint:#3a3a3a;
+    --hair:#1f1f1f;
+    --line:#2a2a2a;
+    --cta:#ffffff;
+    --cta-ink:#0a0a0a;
+    --warn:#e0e0e0;
+    --max:1320px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);}
+  body{
+    font-family:"JetBrains Mono", ui-monospace, "IBM Plex Mono", "Source Code Pro", Menlo, Consolas, monospace;
+    font-weight:400;
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:geometricPrecision;
+    overflow-x:hidden;
+  }
+  ::selection{background:#fff;color:#0a0a0a}
+  a{color:inherit;text-decoration:none}
+  hr{border:0;border-top:1px solid var(--hair)}
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+  @media (max-width:700px){ .wrap{padding:0 20px} }
+
+  .topbar{
+    border-bottom:1px solid var(--hair);
+    position:sticky;top:0;background:var(--bg);z-index:50;
+  }
+  .topbar .row{
+    display:flex;align-items:center;justify-content:space-between;
+    height:56px;
+    font-size:12px;letter-spacing:.04em;
+  }
+  .topbar .left{display:flex;gap:24px;align-items:center;color:var(--dim)}
+  .topbar .left b{color:var(--fg);font-weight:700;letter-spacing:.06em}
+  .topbar .right{display:flex;gap:24px;align-items:center;color:var(--dim)}
+  .topbar .dot{width:8px;height:8px;background:var(--fg);display:inline-block;margin-right:8px;vertical-align:1px}
+  .topbar .pipe{color:var(--faint)}
+  @media (max-width:700px){ .topbar .hide-sm{display:none} }
+
+  .hero{padding:80px 0 96px;border-bottom:1px solid var(--hair);position:relative;}
+  .hero .meta{
+    display:flex;justify-content:space-between;color:var(--dim);font-size:12px;letter-spacing:.06em;
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:10px 0;margin-bottom:48px;
+  }
+  .hero .meta span+span::before{content:""}
+  .hero h1{
+    font-family:inherit;
+    font-weight:800;
+    font-size:clamp(44px, 9.2vw, 148px);
+    line-height:.92;
+    letter-spacing:-0.04em;
+    text-transform:uppercase;
+    margin-bottom:28px;
+  }
+  .hero h1 .stack{display:block}
+  .hero h1 .comma{color:var(--dim);font-weight:400;margin:0 .04em 0 -.06em}
+  .hero h1 .period{color:var(--fg)}
+  .hero .sub{
+    max-width:760px;
+    font-size:clamp(16px, 1.6vw, 22px);
+    line-height:1.5;
+    color:var(--fg);
+    margin:0 0 44px;
+  }
+  .hero .sub b{font-weight:700;background:var(--fg);color:var(--bg);padding:0 6px}
+  .hero .sub .em{color:var(--dim)}
+
+  .ctas{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--line);width:fit-content;max-width:100%}
+  .ctas .btn{
+    display:flex;align-items:baseline;gap:14px;
+    padding:18px 28px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+    border:0;background:transparent;color:var(--fg);cursor:pointer;
+    border-right:1px solid var(--line);
+  }
+  .ctas .btn:last-child{border-right:0}
+  .ctas .btn .arrow{font-weight:400;color:var(--dim);font-size:14px}
+  .ctas .btn .price{color:var(--dim);font-weight:400;font-size:12px}
+  .ctas .primary{background:var(--cta);color:var(--cta-ink)}
+  .ctas .primary .arrow,.ctas .primary .price{color:var(--cta-ink)}
+
+  .hero .ascii{
+    position:absolute;right:32px;top:96px;color:var(--faint);font-size:11px;line-height:1.25;
+    white-space:pre;text-align:right;pointer-events:none;
+  }
+  @media (max-width:1100px){ .hero .ascii{display:none} }
+
+  .hero .runners{
+    display:flex;justify-content:space-between;color:var(--dim);font-size:11px;letter-spacing:.08em;
+    margin-top:64px;padding-top:14px;border-top:1px solid var(--hair);text-transform:uppercase;
+  }
+
+  section.s{padding:96px 0;border-bottom:1px solid var(--hair)}
+  .sec-head{
+    display:grid;grid-template-columns:160px 1fr;gap:32px;margin-bottom:56px;
+  }
+  @media (max-width:700px){ .sec-head{grid-template-columns:1fr;gap:8px} }
+  .sec-num{color:var(--dim);font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding-top:6px}
+  .sec-title{font-size:clamp(28px,4.5vw,56px);font-weight:700;line-height:1;letter-spacing:-0.02em;text-transform:uppercase}
+  .sec-title .dim{color:var(--dim);font-weight:400}
+
+  .problem .body{
+    display:grid;grid-template-columns:160px 1fr 280px;gap:32px;
+  }
+  @media (max-width:900px){ .problem .body{grid-template-columns:1fr} }
+  .problem p{
+    font-size:clamp(20px, 2.4vw, 34px);line-height:1.35;font-weight:500;letter-spacing:-0.01em;
+    max-width:24ch;
+  }
+  .problem .quote-mark{color:var(--dim);font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding-top:8px}
+  .problem .aside{
+    color:var(--dim);font-size:12px;line-height:1.7;border-left:1px solid var(--line);padding:4px 0 4px 16px;align-self:end;
+  }
+  .problem .aside b{color:var(--fg);font-weight:700;display:block;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+  .problem .strike{text-decoration:line-through;text-decoration-color:var(--dim)}
+  .problem .hi{background:var(--fg);color:var(--bg);padding:0 4px}
+
+  .steps .grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border:1px solid var(--line);
+  }
+  @media (max-width:900px){ .steps .grid{grid-template-columns:1fr} }
+  .step{padding:36px 32px 40px;border-right:1px solid var(--line);position:relative;min-height:280px;display:flex;flex-direction:column;justify-content:space-between}
+  .step:last-child{border-right:0}
+  @media (max-width:900px){ .step{border-right:0;border-bottom:1px solid var(--line)} .step:last-child{border-bottom:0} }
+  .step .n{font-size:11px;color:var(--dim);letter-spacing:.18em;display:flex;justify-content:space-between}
+  .step .n b{color:var(--fg);font-weight:700}
+  .step .verb{font-size:32px;font-weight:800;text-transform:uppercase;letter-spacing:-0.02em;line-height:1;margin:32px 0 14px}
+  .step .desc{font-size:13px;color:var(--dim);line-height:1.6;max-width:32ch}
+  .step pre{font-size:11px;color:var(--fg);background:transparent;border-top:1px solid var(--line);margin-top:24px;padding-top:14px;white-space:pre-wrap;word-break:break-all;line-height:1.6}
+  .step .prompt{color:var(--dim)}
+  .step .arrow{position:absolute;right:-7px;top:50%;font-size:14px;background:var(--bg);color:var(--dim);padding:4px 0;line-height:1}
+  @media (max-width:900px){ .step .arrow{display:none} }
+
+  .ba .grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}
+  @media (max-width:900px){ .ba .grid{grid-template-columns:1fr} }
+  .ba .col{padding:32px}
+  .ba .col.before{border-right:1px solid var(--line);background:transparent}
+  @media (max-width:900px){ .ba .col.before{border-right:0;border-bottom:1px solid var(--line)} }
+  .ba .label{
+    display:flex;justify-content:space-between;align-items:center;
+    color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    border-bottom:1px solid var(--hair);padding-bottom:10px;margin-bottom:20px;
+  }
+  .ba .label .tag{padding:2px 8px;border:1px solid var(--line);font-size:10px}
+  .ba .label .tag.bad{color:#e0e0e0}
+  .ba .label .tag.good{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+  .ba pre{font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--fg)}
+  .ba .ts{color:var(--dim)}
+  .ba .you{color:var(--dim)}
+  .ba .claude{color:var(--fg);font-weight:500}
+  .ba .strike{color:var(--dim);text-decoration:line-through;text-decoration-color:var(--faint)}
+  .ba .hi{background:var(--fg);color:var(--bg);padding:0 4px}
+  .ba .blink{display:inline-block;width:8px;height:14px;background:var(--fg);vertical-align:-2px;margin-left:2px}
+
+  .features ol{list-style:none;border-top:1px solid var(--hair)}
+  .features li{
+    display:grid;grid-template-columns:60px 1fr 200px;gap:24px;align-items:baseline;
+    padding:18px 0;border-bottom:1px solid var(--hair);
+    font-size:clamp(15px, 1.5vw, 18px);
+  }
+  @media (max-width:700px){ .features li{grid-template-columns:48px 1fr;}.features li .tag{display:none} }
+  .features li .num{color:var(--dim);font-size:12px;letter-spacing:.1em}
+  .features li .text b{font-weight:700}
+  .features li .text .tech{color:var(--dim)}
+  .features li .tag{color:var(--dim);font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-align:right}
+
+  .regions .grid{
+    display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);
+  }
+  @media (max-width:900px){ .regions .grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:520px){ .regions .grid{grid-template-columns:1fr} }
+  .reg{padding:18px 18px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:118px;display:flex;flex-direction:column;justify-content:space-between;gap:12px}
+  .reg:nth-child(4n){border-right:0}
+  .reg:nth-last-child(-n+4){border-bottom:0}
+  @media (max-width:900px){
+    .reg{border-right:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important}
+    .reg:nth-child(2n){border-right:0!important}
+    .reg:nth-last-child(-n+2){border-bottom:0!important}
+  }
+  @media (max-width:520px){
+    .reg{border-right:0!important}
+    .reg:nth-last-child(-n+1){border-bottom:0!important}
+    .reg:not(:last-child){border-bottom:1px solid var(--line)!important}
+  }
+  .reg .id{font-size:10px;color:var(--dim);letter-spacing:.15em;display:flex;justify-content:space-between}
+  .reg .name{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:-0.01em;line-height:1.15}
+  .reg .name .alt{display:block;color:var(--dim);font-weight:400;font-size:11px;letter-spacing:.05em;text-transform:none;margin-top:4px}
+  .reg .bar{height:6px;background:var(--line);position:relative}
+  .reg .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--fg);display:block}
+
+  .regions .legend{
+    display:flex;justify-content:space-between;color:var(--dim);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;margin-top:18px;
+  }
+
+  .tech .row{
+    display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);
+  }
+  @media (max-width:900px){ .tech .row{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:520px){ .tech .row{grid-template-columns:1fr} }
+  .tech .cell{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .tech .cell:nth-child(5n){border-right:0}
+  .tech .cell .k{font-size:11px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+  .tech .cell .v{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+  .tech .cell .note{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5}
+  .tech .stack-line{
+    margin-top:18px;color:var(--dim);font-size:12px;letter-spacing:.06em;
+    border-top:1px solid var(--hair);padding-top:14px;
+  }
+  .tech .stack-line b{color:var(--fg);font-weight:700;letter-spacing:.06em}
+
+  .shot .body{border:1px solid var(--line);padding:0;}
+  .shot .barbar{
+    display:flex;justify-content:space-between;align-items:center;
+    border-bottom:1px solid var(--line);padding:12px 18px;
+    color:var(--dim);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .shot .frame{
+    aspect-ratio:16/9;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 14px, rgba(255,255,255,0.025) 14px 15px);
+    border-bottom:1px solid var(--line);
+    position:relative;display:flex;align-items:center;justify-content:center;
+    color:var(--dim);
+  }
+  .shot .frame .stamp{
+    border:1px dashed var(--line);padding:12px 22px;font-size:12px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--dim);background:var(--bg);
+  }
+  .shot .barbar .right{color:var(--dim)}
+  .shot .desc{padding:14px 18px;color:var(--dim);font-size:11px;letter-spacing:.06em;border-top:1px solid var(--hair)}
+  .shot .video-row{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:12px 18px;border-top:1px solid var(--line);
+  }
+  .shot .video-row a{
+    color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  }
+  .shot .video-row a:hover{text-decoration:underline}
+
+  .download{padding:120px 0}
+  .download h2{font-size:clamp(36px,7vw,96px);font-weight:800;text-transform:uppercase;letter-spacing:-0.04em;line-height:.92;max-width:18ch}
+  .download h2 .dim{color:var(--dim);font-weight:400}
+  .download .ctas{margin-top:48px}
+  .download .ctas .btn{padding:24px 32px;font-size:14px}
+  .download .note{
+    margin-top:36px;color:var(--dim);font-size:13px;line-height:1.7;max-width:64ch;border-top:1px solid var(--hair);padding-top:18px;
+  }
+  .download .note b{color:var(--fg);font-weight:700}
+  .dl-info{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:32px;border:1px solid var(--line);
+  }
+  @media (max-width:700px){ .dl-info{grid-template-columns:1fr} }
+  .dl-card{
+    padding:20px 24px;border-right:1px solid var(--line);
+  }
+  .dl-card:last-child{border-right:0}
+  @media (max-width:700px){ .dl-card{border-right:0;border-bottom:1px solid var(--line)} .dl-card:last-child{border-bottom:0} }
+  .dl-card b{color:var(--fg);font-size:14px;font-weight:700}
+  .dl-card code{color:var(--accent);font-size:12px}
+  .dl-card p{color:var(--dim);font-size:12px;line-height:1.7;margin-top:8px}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 56px;color:var(--dim);font-size:12px;letter-spacing:.04em}
+  footer .row{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap}
+  footer .col b{color:var(--fg);font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:10px;font-size:11px}
+  footer a:hover{color:var(--fg)}
+  footer .row > .col{min-width:160px}
+  footer .ascii{margin-top:28px;color:var(--faint);font-size:10px;line-height:1.2;white-space:pre;overflow:hidden}
+
+  .marquee-bar{
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:10px 0;color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    display:flex;justify-content:space-between;
+  }
+
+  .readme .body{
+    display:grid;grid-template-columns:1fr 340px;gap:48px;
+  }
+  @media (max-width:900px){ .readme .body{grid-template-columns:1fr;gap:32px} }
+  .readme .prose{font-size:14px;line-height:1.75;color:var(--fg)}
+  .readme .prose h3{
+    font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--dim);margin:32px 0 12px;padding-top:16px;border-top:1px solid var(--hair);
+  }
+  .readme .prose h3:first-child{margin-top:0;padding-top:0;border-top:0}
+  .readme .prose p{margin:0 0 14px;color:var(--fg)}
+  .readme .prose code{
+    background:rgba(255,255,255,0.06);padding:2px 6px;font-size:12px;
+    border:1px solid var(--hair);
+  }
+  .readme .prose ul{list-style:none;margin:0 0 14px;padding:0}
+  .readme .prose li{padding:4px 0;color:var(--fg)}
+  .readme .prose li::before{content:"—";color:var(--dim);margin-right:10px}
+  .readme .sidebar{border-left:1px solid var(--line);padding-left:32px}
+  @media (max-width:900px){ .readme .sidebar{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:24px} }
+  .readme .sidebar .block{margin-bottom:28px}
+  .readme .sidebar .block-title{
+    font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--dim);margin-bottom:10px;
+  }
+  .readme .sidebar pre{
+    font-size:12px;line-height:1.7;color:var(--fg);background:rgba(255,255,255,0.02);
+    border:1px solid var(--hair);padding:14px 16px;white-space:pre-wrap;word-break:break-all;
+  }
+  .readme .sidebar .val{font-size:14px;font-weight:700;color:var(--fg)}
+  .readme .sidebar .sub-val{font-size:12px;color:var(--dim);margin-top:2px}
+
+  .changelog .timeline{border-left:2px solid var(--line);margin-left:6px;padding-left:28px}
+  .changelog .release{margin-bottom:48px;position:relative}
+  .changelog .release::before{
+    content:"";position:absolute;left:-34px;top:6px;
+    width:12px;height:12px;background:var(--bg);border:2px solid var(--fg);
+  }
+  .changelog .release.old::before{border-color:var(--dim)}
+  .changelog .ver{
+    font-size:20px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;
+    display:flex;align-items:baseline;gap:14px;
+  }
+  .changelog .ver .date{font-size:11px;font-weight:400;color:var(--dim);letter-spacing:.1em}
+  .changelog .ver .tag{
+    font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    padding:2px 8px;border:1px solid var(--fg);
+  }
+  .changelog .release.old .ver .tag{border-color:var(--line);color:var(--dim)}
+  .changelog .changes{margin-top:14px;font-size:13px;line-height:1.7;color:var(--dim)}
+  .changelog .changes li{padding:3px 0;list-style:none}
+  .changelog .changes li::before{content:"+ ";color:var(--fg);font-weight:700}
+  .changelog .changes li.fix::before{content:"~ ";color:var(--dim)}
+  .changelog .changes li.breaking::before{content:"! ";color:var(--fg)}
+  .changelog .changes .cat{
+    font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);margin:12px 0 4px;display:block;
+  }
+
+  .tools .grid{
+    display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);
+  }
+  @media (max-width:1100px){ .tools .grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:600px){ .tools .grid{grid-template-columns:1fr} }
+  .tool-card{
+    padding:20px 18px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:flex;flex-direction:column;gap:8px;min-height:150px;
+  }
+  .tool-card:nth-child(4n){border-right:0}
+  @media (max-width:1100px){
+    .tool-card{border-right:1px solid var(--line)!important}
+    .tool-card:nth-child(2n){border-right:0!important}
+  }
+  @media (max-width:600px){ .tool-card{border-right:0!important} }
+  .tool-card .tool-head{display:flex;justify-content:space-between;align-items:baseline}
+  .tool-card .tool-name{font-size:13px;font-weight:700;color:var(--fg);letter-spacing:-0.01em}
+  .tool-card .tool-cat{
+    font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--dim);padding:2px 6px;border:1px solid var(--line);
+  }
+  .tool-card .tool-desc{font-size:12px;color:var(--dim);line-height:1.6;flex:1}
+  .tool-card .tool-when{font-size:11px;color:var(--faint);line-height:1.5;border-top:1px solid var(--hair);padding-top:8px;margin-top:auto}
+  .tool-card .tool-when b{color:var(--dim);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap row">
+    <div class="left">
+      <span><span class="dot"></span><b>GYSTC</b></span>
+      <span class="hide-sm">v1.1.0 — stable</span>
+      <span class="hide-sm pipe">/</span>
+      <span class="hide-sm">MCP server / persistent memory</span>
+    </div>
+    <div class="right">
+      <a href="#tools" class="hide-sm">TOOLS</a>
+      <span class="hide-sm pipe">/</span>
+      <a href="#readme" class="hide-sm">README</a>
+      <span class="hide-sm pipe">/</span>
+      <a href="#changelog" class="hide-sm">CHANGELOG</a>
+      <span class="hide-sm pipe">/</span>
+      <a href="#download">↓ DOWNLOAD</a>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="meta">
+      <span>FILE: index.html</span>
+      <span class="hide-sm">BUILD: 1.1.0 / 2026-05</span>
+      <span class="hide-sm">TARGET: claude desktop / cli</span>
+      <span>LICENSE: EXE/DMG FREE · SRC PATREON</span>
+    </div>
+
+    <pre class="ascii">+----------------------------+
+|  MEM[Claude] = ∅           |
+|  > start session #47       |
+|  > "explain project again" |
+|  > ...                     |
+|  GYSTC.attach()            |
+|  MEM[Claude] := vault/     |
+|  > "based on march decs..."|
++----------------------------+</pre>
+
+    <h1>
+      <span class="stack">Get your</span>
+      <span class="stack">shit together<span class="comma">,</span></span>
+      <span class="stack">Claude<span class="period">.</span></span>
+    </h1>
+
+    <p class="sub">
+      Your AI forgets everything. <b>Every. Single. Session.</b>
+      <span class="em">This fixes that — a local MCP server that gives Claude a persistent long-term memory across sessions, projects, and months.</span>
+    </p>
+
+    <div class="ctas">
+      <a class="btn primary" href="https://github.com/skunkyfunky12/gystc/releases/latest">
+        <span>↓ Download ZIP</span>
+        <span class="price">— $0 · Windows</span>
+      </a>
+      <a class="btn" href="https://github.com/skunkyfunky12/gystc/releases/latest">
+        <span>↓ Download DMG</span>
+        <span class="price">— $0 · macOS</span>
+      </a>
+      <a class="btn" href="#download">
+        <span>↗ Source code</span>
+        <span class="price">— via Patreon</span>
+      </a>
+      <a class="btn" href="https://github.com/skunkyfunky12/gystc" target="_blank" rel="noopener">
+        <span>★ GitHub</span>
+        <span class="price">— star if you like it</span>
+      </a>
+    </div>
+
+    <div class="runners">
+      <span>scroll ↓</span>
+      <span>local-first · no cloud · no telemetry</span>
+      <span>011 sections</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="marquee-bar">
+  <span>// organized like a brain</span>
+  <span class="hide-sm">// works like a search engine</span>
+  <span>// performs like neither existed before</span>
+</div></div>
+
+<section class="s problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 02 ] / THE PROBLEM</div>
+      <h2 class="sec-title">Every session is <span class="dim">groundhog day.</span></h2>
+    </div>
+    <div class="body">
+      <div class="quote-mark">>>></div>
+      <p>
+        You've explained your project structure to Claude <span class="hi">50 times</span>.
+        It forgets your architecture decisions. It doesn't know your conventions.
+        Every session — <span class="strike">finally productive</span> — starts at zero.
+      </p>
+      <div class="aside">
+        <b>// recurring symptoms</b>
+        — "remind me what stack you use"<br>
+        — "what was that file called again?"<br>
+        — "should I use tabs or spaces here?"<br>
+        — "wait, who decided this?"<br>
+        — repeats every <b style="display:inline;font-size:12px;letter-spacing:0">~1h</b>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s steps">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 03 ] / HOW IT WORKS</div>
+      <h2 class="sec-title">Three steps. <span class="dim">No accounts, no cloud.</span></h2>
+    </div>
+    <div class="grid">
+      <div class="step">
+        <div class="n"><b>STEP_01</b><span>0:00 → 0:30</span></div>
+        <div>
+          <div class="verb">Install</div>
+          <div class="desc">Run the EXE (Windows) or open the DMG (macOS). The setup wizard registers the MCP server with Claude. No package manager, no PATH dance.</div>
+        </div>
+        <pre><span class="prompt">$ </span>./gystc-setup.exe</pre>
+        <span class="arrow">→</span>
+      </div>
+      <div class="step">
+        <div class="n"><b>STEP_02</b><span>0:30 → 0:45</span></div>
+        <div>
+          <div class="verb">Point at vault</div>
+          <div class="desc">One config field: the folder Claude should remember. Markdown, code, notes — anything textual.</div>
+        </div>
+        <pre><span class="prompt">vault_path = </span>"D:/notes/work"</pre>
+        <span class="arrow">→</span>
+      </div>
+      <div class="step">
+        <div class="n"><b>STEP_03</b><span>0:45 → ∞</span></div>
+        <div>
+          <div class="verb">Forget about it</div>
+          <div class="desc">Every new session, Claude pulls relevant context automatically. You stop re-explaining.</div>
+        </div>
+        <pre><span class="prompt">claude > </span>auto_context: ok</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s ba">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 04 ] / BEFORE · AFTER</div>
+      <h2 class="sec-title">Same prompt. <span class="dim">Different memory.</span></h2>
+    </div>
+    <div class="grid">
+      <div class="col before">
+        <div class="label">
+          <span>before — vanilla claude</span>
+          <span class="tag bad">Session #47</span>
+        </div>
+<pre><span class="ts">[ 14:02 ]</span> <span class="you">you ></span> let's keep working on the auth refactor.
+
+<span class="ts">[ 14:02 ]</span> <span class="claude">claude ></span> Sure! <span class="strike">Quick question — can you</span>
+<span class="strike">explain your project structure</span> again?
+What auth library are you using? Where
+do tokens live? Any conventions I
+should follow?
+
+<span class="ts">[ 14:03 ]</span> <span class="you">you ></span> ......<span class="blink"></span></pre>
+      </div>
+      <div class="col after">
+        <div class="label">
+          <span>after — with gystc</span>
+          <span class="tag good">Session #47</span>
+        </div>
+<pre><span class="ts">[ 14:02 ]</span> <span class="you">you ></span> let's keep working on the auth refactor.
+
+<span class="ts">[ 14:02 ]</span> <span class="claude">claude ></span> Based on your <span class="hi">architecture decisions
+from March</span>, you're using session
+cookies (not JWT) and the helper lives
+in <code>lib/auth/session.ts</code>. Want me to
+extend the rotation logic we sketched
+last Tuesday?<span class="blink"></span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s features">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 05 ] / FEATURES</div>
+      <h2 class="sec-title">Eleven things <span class="dim">it does right.</span></h2>
+    </div>
+    <ol>
+      <li><span class="num">01</span><span class="text"><b>Persistent memory</b> across sessions and projects.</span><span class="tag">CORE</span></li>
+      <li><span class="num">02</span><span class="text"><b>Semantic search</b> <span class="tech">— FAISS vector similarity.</span></span><span class="tag">SEARCH</span></li>
+      <li><span class="num">03</span><span class="text"><b>Full-text search</b> <span class="tech">— SQLite FTS5.</span></span><span class="tag">SEARCH</span></li>
+      <li><span class="num">04</span><span class="text"><b>Hybrid search</b> with Reciprocal Rank Fusion.</span><span class="tag">SEARCH</span></li>
+      <li><span class="num">05</span><span class="text"><b>Cross-encoder re-ranking</b> <span class="tech">— optional, off by default.</span></span><span class="tag">PRECISION</span></li>
+      <li><span class="num">06</span><span class="text"><b>12 knowledge regions</b> for structured organization.</span><span class="tag">STRUCTURE</span></li>
+      <li><span class="num">07</span><span class="text"><b>Segmental search</b> <span class="tech">— queries target relevant regions, not the whole vault.</span></span><span class="tag">PRECISION</span></li>
+      <li><span class="num">08</span><span class="text"><b>Smart chunking</b> for long documents.</span><span class="tag">INDEXER</span></li>
+      <li><span class="num">09</span><span class="text"><b>Content versioning</b> with rollback.</span><span class="tag">STORAGE</span></li>
+      <li><span class="num">10</span><span class="text"><b>Auto-context</b> on session start.</span><span class="tag">RUNTIME</span></li>
+      <li><span class="num">11</span><span class="text"><b>Background model loading</b> <span class="tech">— zero blocking startup.</span></span><span class="tag">RUNTIME</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="s tools" id="tools">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 06 ] / MCP TOOLS</div>
+      <h2 class="sec-title">8 tools. <span class="dim">Zero bloat.</span></h2>
+    </div>
+    <p style="color:var(--dim);max-width:80ch;font-size:13px;line-height:1.7;margin-bottom:28px">
+      Every tool is exposed via <span style="color:var(--fg)">Model Context Protocol</span>.
+      Claude calls them autonomously — no slash commands, no manual triggers.
+      Consolidated from 16 to 8 in v1.1.0 for faster, more reliable responses.
+    </p>
+    <div class="grid">
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_retrieve</span>
+          <span class="tool-cat">SEARCH</span>
+        </div>
+        <p class="tool-desc">Unified search: semantic (FAISS), keyword (FTS5), and graph traversal in one call. Pass a query, file paths, or both. Falls back to keyword-only if the model is still loading.</p>
+        <p class="tool-when">When Claude needs knowledge about any topic, project, or prior decision.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_store</span>
+          <span class="tool-cat">WRITE</span>
+        </div>
+        <p class="tool-desc">Save a new note to the vault. Automatically embeds it, classifies it into a brain region, versions old content, and indexes it for future retrieval.</p>
+        <p class="tool-when">When Claude discovers something worth remembering across sessions.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_related</span>
+          <span class="tool-cat">GRAPH</span>
+        </div>
+        <p class="tool-desc">Explore connections from a specific note. Follows backlinks and embedding similarity to surface related knowledge you didn't explicitly search for.</p>
+        <p class="tool-when">When exploring how concepts connect or finding adjacent knowledge.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_recent</span>
+          <span class="tool-cat">SEARCH</span>
+        </div>
+        <p class="tool-desc">List recently changed notes, ordered by modification time. Instant — no model needed. The go-to tool while the embedding model is still loading.</p>
+        <p class="tool-when">When Claude needs to understand recent vault activity or changes.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_status</span>
+          <span class="tool-cat">META</span>
+        </div>
+        <p class="tool-desc">Fast health check — note count, vector count, model status, region distribution. Always instant, responds in under 10ms.</p>
+        <p class="tool-when">Quick sanity check that the MCP server and vault are operational.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_regions</span>
+          <span class="tool-cat">META</span>
+        </div>
+        <p class="tool-desc">List all 12 brain regions with note counts, descriptions, and customization options. Shows how the vault is organized.</p>
+        <p class="tool-when">When Claude needs to understand the vault's structure or pick a region.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_classify</span>
+          <span class="tool-cat">ORGANIZE</span>
+        </div>
+        <p class="tool-desc">Classify notes into brain regions using keyword rules (no API key needed). Supports single-note, batch reclassify, and feedback corrections — all via the action parameter.</p>
+        <p class="tool-when">When notes need to be assigned to or moved between brain regions.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-head">
+          <span class="tool-name">brain_versions</span>
+          <span class="tool-cat">VERSION</span>
+        </div>
+        <p class="tool-desc">View history, diff against previous versions, or rollback a note. All versioning in one tool via the action parameter.</p>
+        <p class="tool-when">When investigating changes or restoring a previous version.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="s regions">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 07 ] / REGIONS</div>
+      <h2 class="sec-title">Organized like a brain. <span class="dim">Searched like an index.</span></h2>
+    </div>
+    <p style="color:var(--dim);max-width:80ch;font-size:13px;line-height:1.7;margin-bottom:28px">
+      The vault is partitioned into 12 named regions. Segmental search routes queries to the
+      relevant ones — not a flat sweep over everything you've ever written. The metaphor is
+      anatomical; the goal is structure and performance, <span style="color:var(--fg)">not simulating a brain</span>.
+    </p>
+    <div class="grid" id="regions-grid"></div>
+    <div class="legend">
+      <span>// 12 regions · 77 communities · ranked by recall on internal benchmark</span>
+      <span class="hide-sm">bar = relative segmental hit rate</span>
+    </div>
+  </div>
+</section>
+
+<section class="s readme" id="readme">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 08 ] / README</div>
+      <h2 class="sec-title">README<span class="dim">.md</span></h2>
+    </div>
+    <div class="body">
+      <div class="prose">
+        <h3>What is GYSTC?</h3>
+        <p>
+          GYSTC is a local MCP server that gives Claude persistent long-term memory.
+          It indexes your Obsidian vault (or any folder of markdown files), builds a semantic
+          search index, and exposes tools that let Claude retrieve, store, and connect knowledge
+          across sessions.
+        </p>
+        <p>
+          No cloud. No accounts. Everything runs on your machine, talks over stdio, and never
+          phones home.
+        </p>
+
+        <h3>Requirements</h3>
+        <ul>
+          <li>Windows 10+ or macOS 12+</li>
+          <li>Claude Desktop or Claude Code (CLI)</li>
+          <li>An Obsidian vault (or any folder with .md files)</li>
+        </ul>
+
+        <h3>Installation</h3>
+        <p>
+          Download the EXE (Windows) or .app (macOS) from the release page. Run it.
+          The setup wizard walks you through pointing at your vault and registering the
+          MCP server with Claude.
+        </p>
+        <p>
+          That's it. Next time you open Claude, it has memory.
+        </p>
+
+        <h3>What Claude gets</h3>
+        <ul>
+          <li><code>brain_retrieve</code> — hybrid search + file context + graph traversal (absorbed brain_context)</li>
+          <li><code>brain_store</code> — save new knowledge as a note</li>
+          <li><code>brain_recent</code> — see recently modified notes</li>
+          <li><code>brain_related</code> — find connected topics via backlinks + embeddings</li>
+          <li><code>brain_classify</code> — classify, reclassify, or teach the classifier (merged 3 tools)</li>
+          <li><code>brain_versions</code> — history, diff, and rollback in one tool (merged 3 tools)</li>
+          <li><code>brain_regions</code> — list all 12 regions with stats</li>
+          <li><code>brain_status</code> — vault health check</li>
+        </ul>
+
+        <h3>How it organizes knowledge</h3>
+        <p>
+          Notes are classified into 12 brain regions by function, not topic. Architecture
+          decisions go to the Prefrontal Cortex. API endpoints go to Motor Cortex. Config
+          files go to Brainstem. When Claude searches, it targets the relevant regions first
+          — not a flat sweep of everything.
+        </p>
+
+        <h3>Session auto-context</h3>
+        <p>
+          A <code>SessionStart</code> hook fires every time you open Claude. It reads your
+          current git context and pulls relevant vault notes automatically. Claude starts
+          every session already knowing what you're working on.
+        </p>
+
+        <h3>Dashboard</h3>
+        <p>
+          The EXE includes a 3D brain visualization built with Three.js. Your vault rendered
+          as a force-directed graph — nodes are notes, edges are backlinks, colors are regions.
+          Click any node to open the note in Obsidian.
+        </p>
+
+        <h3>Source code</h3>
+        <p>
+          The EXE is free. Source code access is available through Patreon — that's how this
+          project gets funded. If you want to read the code, contribute, or self-host from
+          source: that's the path.
+        </p>
+      </div>
+      <div class="sidebar">
+        <div class="block">
+          <div class="block-title">// Quick start</div>
+<pre><span style="color:var(--dim)">1.</span> Download EXE (Win) or DMG (Mac)
+<span style="color:var(--dim)">2.</span> Pick your vault folder
+<span style="color:var(--dim)">3.</span> Click "Install MCP + Hooks"
+<span style="color:var(--dim)">4.</span> Open Claude. Done.</pre>
+        </div>
+        <div class="block">
+          <div class="block-title">// MCP config</div>
+<pre>{
+  "mcpServers": {
+    "gystc": {
+      "command": "python",
+      "args": ["-m", "brain_mcp"]
+    }
+  }
+}</pre>
+        </div>
+        <div class="block">
+          <div class="block-title">// Stats</div>
+          <div class="val">8 MCP tools</div>
+          <div class="sub-val">retrieve, store, recent, related, classify, versions, regions, status</div>
+        </div>
+        <div class="block">
+          <div class="val">12 brain regions</div>
+          <div class="sub-val">functional classification, not topic folders</div>
+        </div>
+        <div class="block">
+          <div class="val">159 tests</div>
+          <div class="sub-val">passing on every commit</div>
+        </div>
+        <div class="block">
+          <div class="block-title">// Compatibility</div>
+          <div class="val">Claude Desktop</div>
+          <div class="sub-val">via MCP over stdio</div>
+          <div class="val" style="margin-top:8px">Claude Code (CLI)</div>
+          <div class="sub-val">MCP + SessionStart hook</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s changelog" id="changelog">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 09 ] / CHANGELOG</div>
+      <h2 class="sec-title">CHANGE<span class="dim">LOG</span></h2>
+    </div>
+    <div class="timeline">
+
+      <div class="release">
+        <div class="ver">v1.1.0 <span class="date">2026-05-10</span> <span class="tag">latest</span></div>
+        <ul class="changes">
+          <span class="cat">// consolidation</span>
+          <li class="breaking">16 → 8 MCP tools — merged context into retrieve, history/diff/rollback into versions, classify/reclassify/feedback into classify</li>
+          <li>Removed brain_reindex, brain_enrich, brain_autolink from MCP (CLI only now)</li>
+          <li>Cross-encoder re-ranker now <b>off by default</b> — enable via <code>reranker: "cross-encoder"</code> in config</li>
+          <span class="cat">// stability</span>
+          <li class="fix">FTS-only fallback when embedding model not ready — search always works</li>
+          <li class="fix">Reduced timeouts: 10s model wait, 30s tool timeout (was 60s/90s)</li>
+          <li class="fix">Empty query no longer triggers unnecessary model wait</li>
+          <li class="fix"><code>is_ready</code> check now detects failed model loads correctly</li>
+          <span class="cat">// instructions</span>
+          <li>Rewritten BRAIN_INSTRUCTIONS — explicit "when NOT to search" guidance to prevent Claude search loops</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.0.2 <span class="date">2026-05-09</span> <span class="tag">patch</span></div>
+        <ul class="changes">
+          <span class="cat">// stability</span>
+          <li class="fix">Event-loop hang fix — <code>wait_ready()</code> moved from async event-loop to executor thread</li>
+          <li class="fix">Embedder <code>_load()</code> now always signals readiness (via <code>finally</code>), even on crash</li>
+          <li class="fix">All async MCP tools wrapped in <code>asyncio.wait_for(timeout=60)</code> — returns error instead of hanging forever</li>
+          <li class="fix">Explicit <code>is_ready</code> check after <code>wait_ready</code> to detect failed model loading</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.0.1 <span class="date">2026-05-09</span> <span class="tag">patch</span></div>
+        <ul class="changes">
+          <span class="cat">// async</span>
+          <li class="fix">All embedding-heavy MCP tools moved to <code>async + run_in_executor</code></li>
+          <li class="fix"><code>brain_store</code> skips embedding when model not loaded yet (graceful fallback)</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.0.0 <span class="date">2026-05-08</span> <span class="tag">initial release</span></div>
+        <ul class="changes">
+          <span class="cat">// release</span>
+          <li class="breaking">First public release — EXE build for Windows, .app for macOS</li>
+          <li>Setup wizard with vault picker, API key config, one-click MCP + hooks install</li>
+          <li>GitHub Actions CI pipeline — automatic builds for Windows + macOS on every tag</li>
+          <span class="cat">// search</span>
+          <li>Cross-encoder re-ranker (ms-marco-MiniLM) — enabled by default for precision</li>
+          <li>Hybrid search with Reciprocal Rank Fusion (FAISS + FTS5)</li>
+          <li>Smart chunking — long notes split at headings, each chunk gets its own vector</li>
+          <li>SessionStart auto-context hook — Claude loads relevant vault notes on every session</li>
+          <span class="cat">// storage</span>
+          <li>Content-addressable versioning — brain_versions (history, diff, rollback)</li>
+          <li>Max 50 versions per note, deduplicated by content hash</li>
+          <span class="cat">// security</span>
+          <li class="fix">XSS fix in dashboard (innerHTML to textContent for untrusted content)</li>
+          <li class="fix">HTML sanitizer bypass fix — inner content of highlight spans now escaped</li>
+          <li class="fix">Path traversal guards on all file operations</li>
+          <li class="fix">Hook command path quoting for Windows paths with spaces</li>
+          <span class="cat">// dashboard</span>
+          <li>Flicker fix — <code>--in-process-gpu</code> Chromium flag (60fps preserved)</li>
+          <li>Obsidian toolbar button via QWebChannel bridge (replaces alert())</li>
+          <li>Full rebrand from Neural Brain to GYSTC</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v0.4.0 <span class="date">2026-05-06</span> <span class="tag">pre-release</span></div>
+        <ul class="changes">
+          <span class="cat">// features</span>
+          <li>Auto-classifier with weighted tiers for brain region assignment</li>
+          <li>brain_reclassify tool for manual region overrides</li>
+          <li>Local search with visual filter in dashboard</li>
+          <li>Settings UI panel with config API</li>
+          <span class="cat">// fixes</span>
+          <li class="fix">MCP cold-start hang — background startup with lifespan fix</li>
+          <li class="fix">Edge visibility overhaul — direct alpha-buffer replaces DataTexture</li>
+          <li class="fix">Region gravity with non-linear distance scaling</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v0.3.0 <span class="date">2026-05-03</span> <span class="tag">pre-release</span></div>
+        <ul class="changes">
+          <span class="cat">// features</span>
+          <li>Full MCP server with 16 tools (retrieve, store, context, recent, related, etc.)</li>
+          <li>FAISS vector index with L2-normalized cosine similarity</li>
+          <li>SQLite FTS5 full-text search with BM25 scoring</li>
+          <li>File watcher with self-write detection</li>
+          <li>Vault tagging script — assign brain regions to all notes</li>
+          <span class="cat">// security</span>
+          <li class="fix">Thread safety hardening, FAISS cleanup, FTS5 sanitization</li>
+          <li class="fix">Silent failure hardening — narrow exception types, add logging</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v0.2.0 <span class="date">2026-04-28</span> <span class="tag">pre-release</span></div>
+        <ul class="changes">
+          <span class="cat">// features</span>
+          <li>Three.js 3D brain visualization via QWebEngineView</li>
+          <li>Bloom, Fresnel-Rim, starfield, dormant synapse animation</li>
+          <li>Obsidian REST API integration — click nodes to open notes</li>
+          <span class="cat">// fixes</span>
+          <li class="fix">Serve web files via local HTTP server instead of file://</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v0.1.0 <span class="date">2026-04-17</span> <span class="tag">initial</span></div>
+        <ul class="changes">
+          <span class="cat">// foundation</span>
+          <li>Project scaffold with 12 brain region definitions</li>
+          <li>Force-directed physics engine with region gravity</li>
+          <li>Orbit camera with perspective projection</li>
+          <li>Ray-casting picker for 3D node selection</li>
+          <li>OpenGL widget with render loop</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="s shot">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 10 ] / INSIDE</div>
+      <h2 class="sec-title">What it looks like <span class="dim">when it's running.</span></h2>
+    </div>
+    <div class="body">
+      <div class="barbar">
+        <span>./gystc — running</span>
+        <span class="right hide-sm">FAISS · FTS5 · CrossEncoder</span>
+        <span>● indexing · 0 errors</span>
+      </div>
+      <div class="frame" style="padding:0;aspect-ratio:auto;height:auto">
+        <img src="./gystc-dashboard.jpg" alt="GYSTC Dashboard — 3D brain visualization with 1853 nodes, 12 regions, live Claude Code terminal" style="width:100%;display:block;border-radius:0"/>
+      </div>
+      <div class="desc">// GYSTC Dashboard — 1853 nodes · 6379 edges · 12 brain regions · live Claude Code terminal · tweaks panel · minimap</div>
+      <div class="video-row">
+        <a href="https://github.com/skunkyfunky12/gystc/releases/download/v1.0.2/gystc-demo.mp4" target="_blank" rel="noopener">▶ Watch demo video (91 MB)</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s tech">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 11 ] / TECH</div>
+      <h2 class="sec-title">For the devs <span class="dim">who want to know.</span></h2>
+    </div>
+    <div class="row">
+      <div class="cell">
+        <div class="k">// runtime</div>
+        <div class="v">Python 3.11+</div>
+        <div class="note">CPython, packaged as a single signed EXE.</div>
+      </div>
+      <div class="cell">
+        <div class="k">// vector index</div>
+        <div class="v">FAISS</div>
+        <div class="note">L2-normalized cosine, IVF flat for vaults &lt; 1M chunks.</div>
+      </div>
+      <div class="cell">
+        <div class="k">// fts</div>
+        <div class="v">SQLite FTS5</div>
+        <div class="note">BM25 with custom tokenizer. WAL mode, embeddable.</div>
+      </div>
+      <div class="cell">
+        <div class="k">// embeddings</div>
+        <div class="v">SentenceTransformers</div>
+        <div class="note">Loaded lazily in a worker thread.</div>
+      </div>
+      <div class="cell">
+        <div class="k">// transport</div>
+        <div class="v">FastMCP</div>
+        <div class="note">Speaks Model Context Protocol over stdio.</div>
+      </div>
+    </div>
+    <div class="stack-line">
+      stack ::= <b>Python</b> · <b>FAISS</b> · <b>SQLite FTS5</b> · <b>SentenceTransformers</b> · <b>FastMCP</b> · content-addressable storage with versioning.
+    </div>
+  </div>
+</section>
+
+<section class="s download" id="download">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 12 ] / GET IT</div>
+      <h2 class="sec-title" style="opacity:0">.</h2>
+    </div>
+    <h2>Stop re-explaining. <span class="dim">Start where you left off.</span></h2>
+    <div class="ctas">
+      <a class="btn primary" href="https://github.com/skunkyfunky12/gystc/releases/latest"><span>↓ Download ZIP</span><span class="price">— $0 · Windows</span></a>
+      <a class="btn" href="https://github.com/skunkyfunky12/gystc/releases/latest"><span>↓ Download DMG</span><span class="price">— $0 · macOS</span></a>
+      <a class="btn" href="#"><span>↗ Source code</span><span class="price">— via Patreon</span></a>
+      <a class="btn" href="https://github.com/skunkyfunky12/gystc" target="_blank" rel="noopener"><span>★ GitHub</span><span class="price">— star if you like it</span></a>
+    </div>
+    <div class="dl-info">
+      <div class="dl-card">
+        <b>Windows</b> — <code>gystc-windows.zip</code>
+        <p>Extract the ZIP, open the <code>GYSTC Dashboard</code> folder, run <code>GYSTC Dashboard.exe</code>. The setup wizard walks you through vault selection, MCP install, and hook registration. Requires Python 3.11+ for the MCP server.</p>
+      </div>
+      <div class="dl-card">
+        <b>macOS</b> — <code>gystc-macos.dmg</code>
+        <p>Open the DMG, drag <code>GYSTC Dashboard.app</code> to Applications. On first launch, the setup wizard configures your vault and installs the MCP server via pip. Requires Python 3.11+.</p>
+      </div>
+    </div>
+    <div class="note">
+      <b>The app is and always will be free.</b> No account, no telemetry, no upsell.
+      Source code access lives behind Patreon — that's how this and the next projects
+      get funded. If you can spare it: thanks. If not: the binary still works.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <div class="col">
+        <b>// gystc</b>
+        get your shit together,<br>
+        claude. v1.1.0 — 2026.<br>
+        local-first MCP server.
+      </div>
+      <div class="col">
+        <b>// links</b>
+        <a href="https://github.com/skunkyfunky12/gystc" target="_blank" rel="noopener">GitHub — ★ star it &nbsp;↗</a><br>
+        <a href="#">Patreon &nbsp;↗</a><br>
+        <a href="https://github.com/skunkyfunky12/gystc/issues" target="_blank" rel="noopener">GitHub issues &nbsp;↗</a><br>
+        <a href="#changelog">Changelog</a><br>
+        <a href="#readme">README.md</a>
+      </div>
+      <div class="col">
+        <b>// not</b>
+        a brain simulator.<br>
+        a SaaS. a chatbot.<br>
+        spying on you.
+      </div>
+      <div class="col">
+        <b>// built by</b>
+        Lucas. solo dev.<br>
+        in a small flat,<br>
+        with too much coffee.
+      </div>
+    </div>
+    <pre class="ascii">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  GYSTC · GET YOUR SHIT TOGETHER, CLAUDE. · NO COOKIES · NO NEWSLETTER · NO TRUSTED-BY · NO BRAIN STOCK PHOTOS · NO BS
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</pre>
+  </div>
+</footer>
+
+<script>
+  const REGIONS = [
+    { de:"Praefrontaler Cortex",  en:"prefrontal cortex",  hit:0.92, role:"planning · decisions" },
+    { de:"Motorischer Cortex",    en:"motor cortex",       hit:0.61, role:"actions · commands" },
+    { de:"Sensorischer Cortex",   en:"sensory cortex",     hit:0.55, role:"inputs · signals" },
+    { de:"Hippocampus",           en:"hippocampus",        hit:0.97, role:"long-term memory" },
+    { de:"Kleinhirn",             en:"cerebellum",         hit:0.48, role:"motor patterns" },
+    { de:"Nucleus Accumbens",     en:"nucleus accumbens",  hit:0.42, role:"reward · feedback" },
+    { de:"Broca-Areal",           en:"broca’s area",  hit:0.81, role:"language · output" },
+    { de:"Visueller Cortex",      en:"visual cortex",      hit:0.66, role:"images · figures" },
+    { de:"Thalamus",              en:"thalamus",           hit:0.74, role:"routing · relay" },
+    { de:"Stammhirn",             en:"brainstem",          hit:0.39, role:"runtime · daemons" },
+    { de:"Basalganglien",         en:"basal ganglia",      hit:0.58, role:"habits · routines" },
+    { de:"Amygdala",              en:"amygdala",           hit:0.50, role:"alerts · errors" },
+  ];
+  const grid = document.getElementById('regions-grid');
+  REGIONS.forEach(function(r, i) {
+    const cell = document.createElement('div');
+    cell.className = 'reg';
+    const id = String(i + 1).padStart(2, '0');
+    const pct = (r.hit * 100).toFixed(0);
+
+    const idDiv = document.createElement('div');
+    idDiv.className = 'id';
+    const idLeft = document.createElement('span');
+    idLeft.textContent = 'R-' + id;
+    const idRight = document.createElement('span');
+    idRight.textContent = pct + '%';
+    idDiv.appendChild(idLeft);
+    idDiv.appendChild(idRight);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'name';
+    nameDiv.textContent = r.de;
+    const altSpan = document.createElement('span');
+    altSpan.className = 'alt';
+    altSpan.textContent = r.en + ' · ' + r.role;
+    nameDiv.appendChild(altSpan);
+
+    const barDiv = document.createElement('div');
+    barDiv.className = 'bar';
+    const barI = document.createElement('i');
+    barI.style.width = pct + '%';
+    barDiv.appendChild(barI);
+
+    cell.appendChild(idDiv);
+    cell.appendChild(nameDiv);
+    cell.appendChild(barDiv);
+    grid.appendChild(cell);
+  });
+</script>
+
+</body>
+</html>
