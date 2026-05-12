@@ -395,7 +395,7 @@
   <div class="wrap row">
     <div class="left">
       <span><span class="dot"></span><b>GYSTC</b></span>
-      <span class="hide-sm">v1.1.0 — stable</span>
+      <span class="hide-sm">v1.2.0 — stable</span>
       <span class="hide-sm pipe">/</span>
       <span class="hide-sm">MCP server / persistent memory</span>
     </div>
@@ -415,7 +415,7 @@
   <div class="wrap">
     <div class="meta">
       <span>FILE: index.html</span>
-      <span class="hide-sm">BUILD: 1.1.0 / 2026-05</span>
+      <span class="hide-sm">BUILD: 1.2.0 / 2026-05</span>
       <span class="hide-sm">TARGET: claude desktop / cli</span>
       <span>LICENSE: EXE/DMG FREE · SRC PATREON</span>
     </div>
@@ -593,7 +593,7 @@ last Tuesday?<span class="blink"></span></pre>
       <li><span class="num">08</span><span class="text"><b>Smart chunking</b> for long documents.</span><span class="tag">INDEXER</span></li>
       <li><span class="num">09</span><span class="text"><b>Content versioning</b> with rollback.</span><span class="tag">STORAGE</span></li>
       <li><span class="num">10</span><span class="text"><b>Auto-context</b> on session start.</span><span class="tag">RUNTIME</span></li>
-      <li><span class="num">11</span><span class="text"><b>Background model loading</b> <span class="tech">— zero blocking startup.</span></span><span class="tag">RUNTIME</span></li>
+      <li><span class="num">11</span><span class="text"><b>Background model loading</b> <span class="tech">— 6s cold start, zero event-loop blocking.</span></span><span class="tag">RUNTIME</span></li>
     </ol>
   </div>
 </section>
@@ -837,7 +837,25 @@ last Tuesday?<span class="blink"></span></pre>
     <div class="timeline">
 
       <div class="release">
-        <div class="ver">v1.1.0 <span class="date">2026-05-10</span> <span class="tag">latest</span></div>
+        <div class="ver">v1.2.0 <span class="date">2026-05-12</span> <span class="tag">latest</span></div>
+        <ul class="changes">
+          <span class="cat">// critical fix — mcp hang eliminated</span>
+          <li class="breaking"><code>wait_ready()</code> moved from async event-loop to executor thread — this was the root cause of all MCP hangs</li>
+          <li class="fix">Model loading no longer blocks the event loop — server stays responsive during the full 6s startup</li>
+          <li class="fix"><code>WAIT_READY_TIMEOUT</code> increased 10s → 20s (model load takes ~11s, timeout was too short)</li>
+          <li class="fix">Reranker <code>_ready.set()</code> moved to <code>finally</code> block — no more permanent hang on abnormal exit</li>
+          <span class="cat">// performance</span>
+          <li><code>HF_HUB_OFFLINE=1</code> — skips ~20 HTTP cache-validation requests on every startup</li>
+          <li>Model load time reduced from ~11s to ~6.4s (44% faster)</li>
+          <li>Library logging suppressed — clean stderr output in MCP mode</li>
+          <span class="cat">// safety</span>
+          <li class="fix"><code>_handle_file_change</code> now checks <code>is_ready</code> before embedding — prevents blocking on model lock</li>
+          <li class="fix"><code>brain_store</code> skips embedding cleanly when model not loaded (was silently broken)</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.1.0 <span class="date">2026-05-10</span> <span class="tag">consolidation</span></div>
         <ul class="changes">
           <span class="cat">// consolidation</span>
           <li class="breaking">16 → 8 MCP tools — merged context into retrieve, history/diff/rollback into versions, classify/reclassify/feedback into classify</li>
@@ -1006,7 +1024,7 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="cell">
         <div class="k">// embeddings</div>
         <div class="v">SentenceTransformers</div>
-        <div class="note">Loaded lazily in a worker thread.</div>
+        <div class="note">Lazy-loaded in background thread. Offline cache, ~6s cold start.</div>
       </div>
       <div class="cell">
         <div class="k">// transport</div>
@@ -1057,7 +1075,7 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="col">
         <b>// gystc</b>
         get your shit together,<br>
-        claude. v1.1.0 — 2026.<br>
+        claude. v1.2.0 — 2026.<br>
         local-first MCP server.
       </div>
       <div class="col">
