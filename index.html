@@ -395,7 +395,7 @@
   <div class="wrap row">
     <div class="left">
       <span><span class="dot"></span><b>GYSTC</b></span>
-      <span class="hide-sm">v1.3.0 — stable</span>
+      <span class="hide-sm">v1.3.1 — stable</span>
       <span class="hide-sm pipe">/</span>
       <span class="hide-sm">MCP server / persistent memory</span>
     </div>
@@ -415,7 +415,7 @@
   <div class="wrap">
     <div class="meta">
       <span>FILE: index.html</span>
-      <span class="hide-sm">BUILD: 1.3.0 / 2026-05</span>
+      <span class="hide-sm">BUILD: 1.3.1 / 2026-06</span>
       <span class="hide-sm">TARGET: claude desktop / cli</span>
       <span>FREE · SOURCE PUBLIC ON GITHUB</span>
     </div>
@@ -838,7 +838,26 @@ last Tuesday?<span class="blink"></span></pre>
     <div class="timeline">
 
       <div class="release">
-        <div class="ver">v1.3.0 <span class="date">2026-05-16</span> <span class="tag">latest</span></div>
+        <div class="ver">v1.3.1 <span class="date">2026-06-03</span> <span class="tag">latest</span></div>
+        <ul class="changes">
+          <span class="cat">// the real hang fix</span>
+          <li class="breaking">First search of a session no longer freezes — <code>brain_retrieve</code> falls back to keyword search instantly instead of blocking on model load; <code>brain_related</code> falls back to backlinks</li>
+          <li class="fix">Embedding now runs on a dedicated bounded pool — a slow embed can never starve the instant tools (<code>status</code>/<code>recent</code>/<code>regions</code>)</li>
+          <li class="fix">SessionStart context hook pointed at a non-existent module — auto-context was silently broken in every install; now fixed</li>
+          <span class="cat">// installer / packaged app</span>
+          <li class="fix"><code>brain_mcp</code> is now bundled in the EXE — Dashboard search, stats, reindex and settings work again</li>
+          <li class="fix">Setup wizard and MCP no longer overwrite each other's <code>config.json</code> keys (merge-on-write)</li>
+          <li class="fix">Clear "install Python 3.11+" message when no interpreter is found, instead of writing a broken MCP command</li>
+          <li><code>psutil</code> is now a declared dependency — zombie-process cleanup works on clean installs</li>
+          <span class="cat">// data correctness</span>
+          <li class="fix">Editing a note refreshes its chunk vectors — search no longer returns stale snippets</li>
+          <li class="fix">Version rollback re-embeds restored content and keeps its tags (was leaving a ghost vector and wiping tags)</li>
+          <li class="fix"><code>brain_classify apply</code> returns a clear error when the note isn't stored, instead of a silent no-op</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.3.0 <span class="date">2026-05-16</span> <span class="tag">stability</span></div>
         <ul class="changes">
           <span class="cat">// stability — zero-hang guarantee</span>
           <li class="breaking">All 8 MCP tools now fully async with <code>run_in_executor</code> + 30s timeout — impossible to block the event loop</li>
@@ -1092,7 +1111,7 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="col">
         <b>// gystc</b>
         get your shit together,<br>
-        claude. v1.3.0 — 2026.<br>
+        claude. v1.3.1 — 2026.<br>
         local-first MCP server.
       </div>
       <div class="col">
