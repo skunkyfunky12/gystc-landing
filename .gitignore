@@ -1,3 +1,10 @@
 .vercel
 .DS_Store
 Thumbs.db
+# secrets — never commit
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+config.local.json
