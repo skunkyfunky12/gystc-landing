@@ -395,7 +395,7 @@
   <div class="wrap row">
     <div class="left">
       <span><span class="dot"></span><b>GYSTC</b></span>
-      <span class="hide-sm">v1.3.1 — stable</span>
+      <span class="hide-sm">v1.3.2 — stable</span>
       <span class="hide-sm pipe">/</span>
       <span class="hide-sm">MCP server / persistent memory</span>
     </div>
@@ -415,7 +415,7 @@
   <div class="wrap">
     <div class="meta">
       <span>FILE: index.html</span>
-      <span class="hide-sm">BUILD: 1.3.1 / 2026-06</span>
+      <span class="hide-sm">BUILD: 1.3.2 / 2026-06</span>
       <span class="hide-sm">TARGET: claude desktop / cli</span>
       <span>FREE · SOURCE PUBLIC ON GITHUB</span>
     </div>
@@ -838,7 +838,16 @@ last Tuesday?<span class="blink"></span></pre>
     <div class="timeline">
 
       <div class="release">
-        <div class="ver">v1.3.1 <span class="date">2026-06-03</span> <span class="tag">latest</span></div>
+        <div class="ver">v1.3.2 <span class="date">2026-06-03</span> <span class="tag">latest</span></div>
+        <ul class="changes">
+          <span class="cat">// dashboard</span>
+          <li>Live activity terminal is alive — Claude's tool calls stream into the dashboard via a PostToolUse hook, and GYSTC memory ops light up the matching brain node in real time</li>
+          <li class="fix">Setup wizard now writes Claude Code's required nested hook schema — the SessionStart context hook and the new activity hook actually fire on install (the old flat format was silently ignored)</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.3.1 <span class="date">2026-06-03</span> <span class="tag">hang fix</span></div>
         <ul class="changes">
           <span class="cat">// the real hang fix</span>
           <li class="breaking">First search of a session no longer freezes — <code>brain_retrieve</code> falls back to keyword search instantly instead of blocking on model load; <code>brain_related</code> falls back to backlinks</li>
@@ -1111,7 +1120,7 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="col">
         <b>// gystc</b>
         get your shit together,<br>
-        claude. v1.3.1 — 2026.<br>
+        claude. v1.3.2 — 2026.<br>
         local-first MCP server.
       </div>
       <div class="col">
