@@ -395,7 +395,7 @@
   <div class="wrap row">
     <div class="left">
       <span><span class="dot"></span><b>GYSTC</b></span>
-      <span class="hide-sm">v1.3.3 — stable</span>
+      <span class="hide-sm">v1.3.4 — stable</span>
       <span class="hide-sm pipe">/</span>
       <span class="hide-sm">MCP server / persistent memory</span>
     </div>
@@ -415,7 +415,7 @@
   <div class="wrap">
     <div class="meta">
       <span>FILE: index.html</span>
-      <span class="hide-sm">BUILD: 1.3.3 / 2026-06</span>
+      <span class="hide-sm">BUILD: 1.3.4 / 2026-06</span>
       <span class="hide-sm">TARGET: claude desktop / cli</span>
       <span>FREE · SOURCE PUBLIC ON GITHUB</span>
     </div>
@@ -838,7 +838,18 @@ last Tuesday?<span class="blink"></span></pre>
     <div class="timeline">
 
       <div class="release">
-        <div class="ver">v1.3.3 <span class="date">2026-06-08</span> <span class="tag">latest</span></div>
+        <div class="ver">v1.3.4 <span class="date">2026-06-08</span> <span class="tag">latest</span></div>
+        <ul class="changes">
+          <span class="cat">// shared daemon — load the model once</span>
+          <li class="breaking">All clients (Claude CLI, Hermes, Command Center) now share ONE long-lived daemon that loads the embedding model + index a single time — instead of each spawning its own ~400&nbsp;MB server. Hermes stops paying a ~6s cold start on every run</li>
+          <li><code>brain_mcp serve</code> is now a thin stdio↔HTTP proxy: it auto-starts the daemon and forwards to it; if the daemon dies mid-session the proxy respawns it and never hangs the client</li>
+          <li class="fix">Daemon is loopback-only (127.0.0.1) with a per-run bearer token + Origin allow-list (DNS-rebinding protection) and a held ephemeral port — no token-leak race</li>
+          <li><code>serve --direct</code> keeps the previous in-process stdio server as a fallback</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.3.3 <span class="date">2026-06-08</span> <span class="tag">stability</span></div>
         <ul class="changes">
           <span class="cat">// the real disconnect fix</span>
           <li class="breaking">No more random "Connection closed" — stdio MCP runs one server per client (CLI + Hermes + Command Center), but startup used to kill every other GYSTC process. That global killer is gone for good</li>
@@ -1138,7 +1149,7 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="col">
         <b>// gystc</b>
         get your shit together,<br>
-        claude. v1.3.3 — 2026.<br>
+        claude. v1.3.4 — 2026.<br>
         local-first MCP server.
       </div>
       <div class="col">
