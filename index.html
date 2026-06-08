@@ -395,7 +395,7 @@
   <div class="wrap row">
     <div class="left">
       <span><span class="dot"></span><b>GYSTC</b></span>
-      <span class="hide-sm">v1.3.4 — stable</span>
+      <span class="hide-sm">v1.3.5 — stable</span>
       <span class="hide-sm pipe">/</span>
       <span class="hide-sm">MCP server / persistent memory</span>
     </div>
@@ -415,7 +415,7 @@
   <div class="wrap">
     <div class="meta">
       <span>FILE: index.html</span>
-      <span class="hide-sm">BUILD: 1.3.4 / 2026-06</span>
+      <span class="hide-sm">BUILD: 1.3.5 / 2026-06</span>
       <span class="hide-sm">TARGET: claude desktop / cli</span>
       <span>FREE · SOURCE PUBLIC ON GITHUB</span>
     </div>
@@ -838,7 +838,19 @@ last Tuesday?<span class="blink"></span></pre>
     <div class="timeline">
 
       <div class="release">
-        <div class="ver">v1.3.4 <span class="date">2026-06-08</span> <span class="tag">latest</span></div>
+        <div class="ver">v1.3.5 <span class="date">2026-06-08</span> <span class="tag">latest</span></div>
+        <ul class="changes">
+          <span class="cat">// daemon idle-shutdown</span>
+          <li>The shared daemon now self-terminates after <code>--idle</code> seconds (default 1800) of no activity — freeing the embedding model + index from RAM. The proxy transparently respawns it on the next call, so it stays invisible to clients</li>
+          <span class="cat">// security hardening (full audit + semgrep — all defense-in-depth)</span>
+          <li class="fix">Liveness probe fails closed on a pid-check error — never sends the bearer token to a possibly-reused port</li>
+          <li class="fix"><code>/mcp</code> request bodies capped at 8&nbsp;MB (413) so a token-holder can't OOM the shared daemon</li>
+          <li class="fix">Upper bounds on network-facing dependencies (<code>mcp&lt;2</code>, <code>httpx&lt;1</code>) against silent / supply-chain upgrades</li>
+        </ul>
+      </div>
+
+      <div class="release old">
+        <div class="ver">v1.3.4 <span class="date">2026-06-08</span> <span class="tag">daemon</span></div>
         <ul class="changes">
           <span class="cat">// shared daemon — load the model once</span>
           <li class="breaking">All clients (Claude CLI, Hermes, Command Center) now share ONE long-lived daemon that loads the embedding model + index a single time — instead of each spawning its own ~400&nbsp;MB server. Hermes stops paying a ~6s cold start on every run</li>
@@ -1149,7 +1161,7 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="col">
         <b>// gystc</b>
         get your shit together,<br>
-        claude. v1.3.4 — 2026.<br>
+        claude. v1.3.5 — 2026.<br>
         local-first MCP server.
       </div>
       <div class="col">
