@@ -8,18 +8,90 @@
 <meta property="og:title" content="GYSTC — Get Your Shit Together, Claude.">
 <meta property="og:description" content="Your AI forgets everything. Every. Single. Session. This fixes that — one local memory daemon, every Claude client plugs in.">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="GYSTC">
 <meta property="og:url" content="https://gystc.dev">
+<meta name="theme-color" content="#0a0a0a">
 <meta property="og:image" content="https://gystc.dev/gystc-dashboard.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GYSTC — Get Your Shit Together, Claude.">
 <meta name="twitter:description" content="Your AI forgets everything. Every. Single. Session. This fixes that — one local memory daemon, every Claude client plugs in.">
 <meta name="twitter:image" content="https://gystc.dev/gystc-dashboard.jpg">
 <link rel="canonical" href="https://gystc.dev">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "GYSTC — Get Your Shit Together, Claude",
+      "operatingSystem": "Windows 10, Windows 11, macOS 12+",
+      "applicationCategory": "DeveloperApplication",
+      "description": "A local memory daemon that gives Claude persistent long-term memory across sessions, projects, and months. One shared brain process, every client plugs in. Local-first, no cloud, no telemetry.",
+      "url": "https://gystc.dev",
+      "image": "https://gystc.dev/gystc-dashboard.jpg",
+      "softwareVersion": "1.3.5",
+      "downloadUrl": "https://github.com/skunkyfunky12/gystc/releases/latest",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my data sent anywhere?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs on your machine — the daemon binds to 127.0.0.1 only. No account, no telemetry, and the fonts are self-hosted, so the page itself makes zero third-party requests too." }
+        },
+        {
+          "@type": "Question",
+          "name": "What does GYSTC cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "$0. The binary and the full source are free, no paywall, no trial. If it saves you time, there's an optional Patreon." }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from Claude's built-in memory?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Built-in memory is short conversation summaries. GYSTC is your entire vault — semantic and full-text search over everything you've written, versioned, organized into 12 regions, shared by every client. The files stay yours, in plain markdown." }
+        },
+        {
+          "@type": "Question",
+          "name": "What do I need to run GYSTC?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Windows 10+ or macOS 12+, Claude Desktop or Claude Code, and a folder of markdown files. An Obsidian vault works perfectly — edits are picked up live." }
+        },
+        {
+          "@type": "Question",
+          "name": "How heavy is the daemon?",
+          "acceptedAnswer": { "@type": "Answer", "text": "About 400 MB RAM while active — that's the embedding model. After 30 minutes of silence it shuts itself down and frees the RAM; the next call respawns it transparently." }
+        },
+        {
+          "@type": "Question",
+          "name": "What if it crashes?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The proxy respawns the daemon automatically, and a single-writer lock keeps the search index consistent. Your notes are plain markdown on disk either way — there is nothing to lose." }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link rel="preload" href="./fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* JetBrains Mono (variable, 100-800) — self-hosted, OFL 1.1 (fonts/OFL.txt).
+     No Google Fonts request: GDPR-clean, zero third-party connections. */
+  @font-face{
+    font-family:"JetBrains Mono";
+    font-style:normal;
+    font-weight:100 800;
+    font-display:swap;
+    src:url("./fonts/jetbrains-mono-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  }
+  @font-face{
+    font-family:"JetBrains Mono";
+    font-style:normal;
+    font-weight:100 800;
+    font-display:swap;
+    src:url("./fonts/jetbrains-mono-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+  }
   :root{
     --bg:#0a0a0a;
     --fg:#e0e0e0;
@@ -209,6 +281,16 @@
   .daemon .explain ul li{padding-left:18px;text-indent:-18px;margin-bottom:8px}
   .daemon .explain ul li::before{content:"— ";color:var(--faint)}
   .daemon .explain ul b{color:var(--fg);font-weight:700}
+
+  .faq .grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-bottom:0}
+  @media (max-width:900px){ .faq .grid{grid-template-columns:1fr} }
+  .faq .qa{padding:28px 32px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  .faq .qa:nth-child(2n){border-right:0}
+  @media (max-width:900px){ .faq .qa{border-right:0} }
+  .faq .q{font-weight:700;font-size:15px;margin-bottom:10px}
+  .faq .q::before{content:"Q: ";color:var(--dim);font-weight:400}
+  .faq .a{color:var(--dim);font-size:13px;line-height:1.7;max-width:58ch}
+  .faq .a b{color:var(--fg);font-weight:700}
 
   .features ol{list-style:none;border-top:1px solid var(--hair)}
   .features li{
@@ -434,6 +516,8 @@
       <span class="hide-sm pipe">/</span>
       <a href="#changelog" class="hide-sm">CHANGELOG</a>
       <span class="hide-sm pipe">/</span>
+      <a href="#faq" class="hide-sm">FAQ</a>
+      <span class="hide-sm pipe">/</span>
       <a href="#download">↓ DOWNLOAD</a>
     </div>
   </div>
@@ -492,7 +576,7 @@
     <div class="runners">
       <span>scroll ↓</span>
       <span>local-first · no cloud · no telemetry</span>
-      <span>012 sections</span>
+      <span>013 sections</span>
     </div>
   </div>
 </header>
@@ -1233,10 +1317,45 @@ agent        ──>  proxy ─┘
   </div>
 </section>
 
+<section class="s faq" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 13 ] / FAQ</div>
+      <h2 class="sec-title">Asked anyway. <span class="dim">Answered anyway.</span></h2>
+    </div>
+    <div class="grid">
+      <div class="qa">
+        <div class="q">Is my data sent anywhere?</div>
+        <div class="a">No. Everything runs on your machine — the daemon binds to <b>127.0.0.1</b> only. No account, no telemetry, and the fonts are self-hosted, so the page itself makes <b>zero third-party requests</b> too.</div>
+      </div>
+      <div class="qa">
+        <div class="q">What does it cost?</div>
+        <div class="a"><b>$0.</b> The binary and the full source are free, no paywall, no trial. If it saves you time, there's an optional Patreon.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How is this different from Claude's built-in memory?</div>
+        <div class="a">Built-in memory is short conversation summaries. GYSTC is <b>your entire vault</b> — semantic + full-text search over everything you've written, versioned, organized into 12 regions, shared by every client. The files stay yours, in plain markdown.</div>
+      </div>
+      <div class="qa">
+        <div class="q">What do I need?</div>
+        <div class="a">Windows 10+ or macOS 12+, <b>Claude Desktop or Claude Code</b>, and a folder of markdown files. An Obsidian vault works perfectly — edits are picked up live.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How heavy is the daemon?</div>
+        <div class="a">About <b>400 MB RAM</b> while active — that's the embedding model. After 30 minutes of silence it shuts itself down and frees the RAM; the next call respawns it transparently.</div>
+      </div>
+      <div class="qa">
+        <div class="q">What if it crashes?</div>
+        <div class="a">The proxy <b>respawns the daemon automatically</b>, and a single-writer lock keeps the search index consistent. Your notes are plain markdown on disk either way — there is nothing to lose.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="s download" id="download">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 13 ] / GET IT</div>
+      <div class="sec-num">[ 14 ] / GET IT</div>
       <h2 class="sec-title" style="opacity:0">.</h2>
     </div>
     <h2>Stop re-explaining. <span class="dim">Start where you left off.</span></h2>
