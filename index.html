@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <title>GYSTC — Get Your Shit Together, Claude.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A local MCP server that gives Claude persistent long-term memory across sessions, projects, and months. Free EXE download.">
+<meta name="description" content="A local memory daemon that gives Claude persistent long-term memory across sessions, projects, and months. One shared brain process, every client plugs in. Free download.">
 <meta property="og:title" content="GYSTC — Get Your Shit Together, Claude.">
-<meta property="og:description" content="Your AI forgets everything. Every. Single. Session. This fixes that.">
+<meta property="og:description" content="Your AI forgets everything. Every. Single. Session. This fixes that — one local memory daemon, every Claude client plugs in.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gystc.dev">
 <meta property="og:image" content="https://gystc.dev/gystc-dashboard.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GYSTC — Get Your Shit Together, Claude.">
-<meta name="twitter:description" content="Your AI forgets everything. Every. Single. Session. This fixes that.">
+<meta name="twitter:description" content="Your AI forgets everything. Every. Single. Session. This fixes that — one local memory daemon, every Claude client plugs in.">
 <meta name="twitter:image" content="https://gystc.dev/gystc-dashboard.jpg">
 <link rel="canonical" href="https://gystc.dev">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
@@ -181,6 +181,34 @@
   .ba .strike{color:var(--dim);text-decoration:line-through;text-decoration-color:var(--faint)}
   .ba .hi{background:var(--fg);color:var(--bg);padding:0 4px}
   .ba .blink{display:inline-block;width:8px;height:14px;background:var(--fg);vertical-align:-2px;margin-left:2px}
+
+  .daemon .grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}
+  @media (max-width:900px){ .daemon .grid{grid-template-columns:1fr} }
+  .daemon .col{padding:32px}
+  .daemon .col.before{border-right:1px solid var(--line)}
+  @media (max-width:900px){ .daemon .col.before{border-right:0;border-bottom:1px solid var(--line)} }
+  .daemon .label{
+    display:flex;justify-content:space-between;align-items:center;
+    color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    border-bottom:1px solid var(--hair);padding-bottom:10px;margin-bottom:20px;
+  }
+  .daemon .label .tag{padding:2px 8px;border:1px solid var(--line);font-size:10px}
+  .daemon .label .tag.good{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+  .daemon pre{font-size:13px;line-height:1.7;white-space:pre;overflow-x:auto;color:var(--fg)}
+  .daemon pre .dim{color:var(--dim)}
+  .daemon pre .hi{background:var(--fg);color:var(--bg);padding:0 4px}
+  .daemon .explain{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-top:0}
+  @media (max-width:900px){ .daemon .explain{grid-template-columns:1fr} }
+  .daemon .explain .cell{padding:28px 32px;border-right:1px solid var(--line)}
+  .daemon .explain .cell:last-child{border-right:0}
+  @media (max-width:900px){ .daemon .explain .cell{border-right:0;border-bottom:1px solid var(--line)} .daemon .explain .cell:last-child{border-bottom:0} }
+  .daemon .explain .k{color:var(--dim);font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px}
+  .daemon .explain p{font-size:14px;line-height:1.7;color:var(--fg);max-width:62ch}
+  .daemon .explain p .hi{background:var(--fg);color:var(--bg);padding:0 4px}
+  .daemon .explain ul{list-style:none;font-size:12.5px;line-height:1.7;color:var(--dim)}
+  .daemon .explain ul li{padding-left:18px;text-indent:-18px;margin-bottom:8px}
+  .daemon .explain ul li::before{content:"— ";color:var(--faint)}
+  .daemon .explain ul b{color:var(--fg);font-weight:700}
 
   .features ol{list-style:none;border-top:1px solid var(--hair)}
   .features li{
@@ -397,7 +425,7 @@
       <span><span class="dot"></span><b>GYSTC</b></span>
       <span class="hide-sm">v1.3.5 — stable</span>
       <span class="hide-sm pipe">/</span>
-      <span class="hide-sm">MCP server / persistent memory</span>
+      <span class="hide-sm">memory daemon / persistent context</span>
     </div>
     <div class="right">
       <a href="#tools" class="hide-sm">TOOLS</a>
@@ -438,7 +466,8 @@
 
     <p class="sub">
       Your AI forgets everything. <b>Every. Single. Session.</b>
-      <span class="em">This fixes that — a local MCP server that gives Claude a persistent long-term memory across sessions, projects, and months.</span>
+      <span class="em">This fixes that — a local memory daemon for Claude. One shared brain process,
+      every client plugs in. Persistent across sessions, projects, and months.</span>
     </p>
 
     <div class="ctas">
@@ -463,15 +492,15 @@
     <div class="runners">
       <span>scroll ↓</span>
       <span>local-first · no cloud · no telemetry</span>
-      <span>011 sections</span>
+      <span>012 sections</span>
     </div>
   </div>
 </header>
 
 <div class="wrap"><div class="marquee-bar">
   <span>// organized like a brain</span>
-  <span class="hide-sm">// works like a search engine</span>
-  <span>// performs like neither existed before</span>
+  <span class="hide-sm">// one daemon, every client</span>
+  <span>// loads the model once, remembers forever</span>
 </div></div>
 
 <section class="s problem">
@@ -576,24 +605,85 @@ last Tuesday?<span class="blink"></span></pre>
   </div>
 </section>
 
+<section class="s daemon" id="daemon">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">[ 05 ] / THE UPGRADE</div>
+      <h2 class="sec-title">One brain. <span class="dim">Every client.</span></h2>
+    </div>
+    <p style="color:var(--dim);max-width:80ch;font-size:13px;line-height:1.7;margin-bottom:28px">
+      GYSTC is a <span style="color:var(--fg)">daemon</span> now. Claude CLI, Claude Desktop,
+      your agents, the dashboard — they all plug into one shared brain process instead of
+      each booting their own.
+    </p>
+    <div class="grid">
+      <div class="col before">
+        <div class="label">
+          <span>before — one server per client</span>
+          <span class="tag">≤ v1.3.3</span>
+        </div>
+<pre>claude cli   ──>  server #1  <span class="dim">[~400 MB model]</span>
+claude desk  ──>  server #2  <span class="dim">[~400 MB model]</span>
+agent        ──>  server #3  <span class="dim">[~400 MB model]</span>
+
+<span class="dim">3× RAM · ~6 s cold start, every time</span></pre>
+      </div>
+      <div class="col after">
+        <div class="label">
+          <span>after — the daemon</span>
+          <span class="tag good">v1.3.4+</span>
+        </div>
+<pre>claude cli   ──>  proxy ─┐
+claude desk  ──>  proxy ─┼──>  <span class="hi">ONE DAEMON</span>
+agent        ──>  proxy ─┘
+<span class="dim">model loaded once · RAM ×1
+~6 s once — then instant for everyone</span></pre>
+      </div>
+    </div>
+    <div class="explain">
+      <div class="cell">
+        <div class="k">// plain english</div>
+        <p>
+          Before, every Claude window started its own copy of GYSTC — and every copy
+          loaded its own embedding model. Open three clients, pay three times.
+          Now <span class="hi">one background process holds the brain</span> and everyone
+          shares it. It even shuts itself down when idle and comes back the moment
+          something asks — you never see or manage it.
+        </p>
+      </div>
+      <div class="cell">
+        <div class="k">// why that's hard (the dev cut)</div>
+        <ul>
+          <li><b>stdio↔HTTP proxy</b> — clients still speak plain MCP over stdio; the proxy auto-spawns the daemon and respawns it if it dies mid-session. No client ever hangs.</li>
+          <li><b>locked down by default</b> — loopback-only (127.0.0.1), per-run bearer token, Origin allow-list against DNS rebinding, request bodies capped.</li>
+          <li><b>single-writer index</b> — a file lock elects exactly one writer for the FAISS index; readers stay searchable and are auto-promoted if the writer exits.</li>
+          <li><b>idle-shutdown</b> — frees the model from RAM after 30 min of silence; the next call transparently respawns it.</li>
+          <li><b>no orphans</b> — a parent-death watchdog kills any server whose client is gone, instead of leaving zombies holding the database.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="s features">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 05 ] / FEATURES</div>
-      <h2 class="sec-title">Eleven things <span class="dim">it does right.</span></h2>
+      <div class="sec-num">[ 06 ] / FEATURES</div>
+      <h2 class="sec-title">Twelve things <span class="dim">it does right.</span></h2>
     </div>
     <ol>
-      <li><span class="num">01</span><span class="text"><b>Persistent memory</b> across sessions and projects.</span><span class="tag">CORE</span></li>
-      <li><span class="num">02</span><span class="text"><b>Semantic search</b> <span class="tech">— FAISS vector similarity.</span></span><span class="tag">SEARCH</span></li>
-      <li><span class="num">03</span><span class="text"><b>Full-text search</b> <span class="tech">— SQLite FTS5.</span></span><span class="tag">SEARCH</span></li>
-      <li><span class="num">04</span><span class="text"><b>Hybrid search</b> with Reciprocal Rank Fusion.</span><span class="tag">SEARCH</span></li>
-      <li><span class="num">05</span><span class="text"><b>Cross-encoder re-ranking</b> <span class="tech">— optional, off by default.</span></span><span class="tag">PRECISION</span></li>
-      <li><span class="num">06</span><span class="text"><b>12 knowledge regions</b> for structured organization.</span><span class="tag">STRUCTURE</span></li>
-      <li><span class="num">07</span><span class="text"><b>Segmental search</b> <span class="tech">— queries target relevant regions, not the whole vault.</span></span><span class="tag">PRECISION</span></li>
-      <li><span class="num">08</span><span class="text"><b>Smart chunking</b> for long documents.</span><span class="tag">INDEXER</span></li>
-      <li><span class="num">09</span><span class="text"><b>Content versioning</b> with rollback.</span><span class="tag">STORAGE</span></li>
-      <li><span class="num">10</span><span class="text"><b>Auto-context</b> on session start.</span><span class="tag">RUNTIME</span></li>
-      <li><span class="num">11</span><span class="text"><b>Background model loading</b> <span class="tech">— 6s cold start, zero event-loop blocking.</span></span><span class="tag">RUNTIME</span></li>
+      <li><span class="num">01</span><span class="text"><b>Shared daemon</b> <span class="tech">— model loaded once, every client plugs in.</span></span><span class="tag">RUNTIME</span></li>
+      <li><span class="num">02</span><span class="text"><b>Persistent memory</b> across sessions and projects.</span><span class="tag">CORE</span></li>
+      <li><span class="num">03</span><span class="text"><b>Semantic search</b> <span class="tech">— FAISS vector similarity.</span></span><span class="tag">SEARCH</span></li>
+      <li><span class="num">04</span><span class="text"><b>Full-text search</b> <span class="tech">— SQLite FTS5.</span></span><span class="tag">SEARCH</span></li>
+      <li><span class="num">05</span><span class="text"><b>Hybrid search</b> with Reciprocal Rank Fusion.</span><span class="tag">SEARCH</span></li>
+      <li><span class="num">06</span><span class="text"><b>Cross-encoder re-ranking</b> <span class="tech">— optional, off by default.</span></span><span class="tag">PRECISION</span></li>
+      <li><span class="num">07</span><span class="text"><b>12 knowledge regions</b> for structured organization.</span><span class="tag">STRUCTURE</span></li>
+      <li><span class="num">08</span><span class="text"><b>Segmental search</b> <span class="tech">— queries target relevant regions, not the whole vault.</span></span><span class="tag">PRECISION</span></li>
+      <li><span class="num">09</span><span class="text"><b>Smart chunking</b> for long documents.</span><span class="tag">INDEXER</span></li>
+      <li><span class="num">10</span><span class="text"><b>Content versioning</b> with rollback.</span><span class="tag">STORAGE</span></li>
+      <li><span class="num">11</span><span class="text"><b>Auto-context</b> on session start.</span><span class="tag">RUNTIME</span></li>
+      <li><span class="num">12</span><span class="text"><b>408 tests</b> <span class="tech">— green on every commit, hardened by three audit rounds.</span></span><span class="tag">QUALITY</span></li>
     </ol>
   </div>
 </section>
@@ -601,7 +691,7 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s tools" id="tools">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 06 ] / MCP TOOLS</div>
+      <div class="sec-num">[ 07 ] / MCP TOOLS</div>
       <h2 class="sec-title">8 tools. <span class="dim">Zero bloat.</span></h2>
     </div>
     <p style="color:var(--dim);max-width:80ch;font-size:13px;line-height:1.7;margin-bottom:28px">
@@ -690,7 +780,7 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s regions">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 07 ] / REGIONS</div>
+      <div class="sec-num">[ 08 ] / REGIONS</div>
       <h2 class="sec-title">Organized like a brain. <span class="dim">Searched like an index.</span></h2>
     </div>
     <p style="color:var(--dim);max-width:80ch;font-size:13px;line-height:1.7;margin-bottom:28px">
@@ -709,21 +799,21 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s readme" id="readme">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 08 ] / README</div>
+      <div class="sec-num">[ 09 ] / README</div>
       <h2 class="sec-title">README<span class="dim">.md</span></h2>
     </div>
     <div class="body">
       <div class="prose">
         <h3>What is GYSTC?</h3>
         <p>
-          GYSTC is a local MCP server that gives Claude persistent long-term memory.
-          It indexes your Obsidian vault (or any folder of markdown files), builds a semantic
-          search index, and exposes tools that let Claude retrieve, store, and connect knowledge
-          across sessions.
+          GYSTC is a local memory daemon for Claude. It indexes your Obsidian vault (or any
+          folder of markdown files), builds a semantic search index, and exposes MCP tools
+          that let Claude retrieve, store, and connect knowledge across sessions.
         </p>
         <p>
-          No cloud. No accounts. Everything runs on your machine, talks over stdio, and never
-          phones home.
+          No cloud. No accounts. Clients talk plain MCP over stdio; behind that, one shared
+          daemon on 127.0.0.1 serves them all — the embedding model loads once, not once per
+          window. Never phones home.
         </p>
 
         <h3>Requirements</h3>
@@ -814,8 +904,12 @@ last Tuesday?<span class="blink"></span></pre>
           <div class="sub-val">functional classification, not topic folders</div>
         </div>
         <div class="block">
-          <div class="val">159 tests</div>
-          <div class="sub-val">passing on every commit</div>
+          <div class="val">408 tests</div>
+          <div class="sub-val">green on every commit · 3 audit rounds</div>
+        </div>
+        <div class="block">
+          <div class="val">1 daemon</div>
+          <div class="sub-val">model loaded once, shared by every client</div>
         </div>
         <div class="block">
           <div class="block-title">// Compatibility</div>
@@ -832,12 +926,24 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s changelog" id="changelog">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 09 ] / CHANGELOG</div>
+      <div class="sec-num">[ 10 ] / CHANGELOG</div>
       <h2 class="sec-title">CHANGE<span class="dim">LOG</span></h2>
     </div>
     <div class="timeline">
 
       <div class="release">
+        <div class="ver">v1.4.0 <span class="date">2026-06</span> <span class="tag">next</span></div>
+        <ul class="changes">
+          <span class="cat">// full hardening pass — 3 adversarial audit rounds</span>
+          <li class="breaking">43 verified findings closed across lifecycle, index integrity, curation, daemon and dashboard — each one adversarially confirmed before the fix, each fix pinned by a regression test. Suite grew 243 → 408 tests</li>
+          <li class="fix">A failed embed can no longer leave a note silently mapped to its OLD content's vector (detach-then-embed, everywhere) — and re-embedding no longer leaks the previous vector</li>
+          <li class="fix">Slow model load no longer disables indexing for the whole session — watcher + keyword search start instantly, vectors backfill when the model is ready, and a broken writer hands the index to a healthy sibling</li>
+          <span class="cat">// vault curation</span>
+          <li>New <code>brain_mcp curate</code>: git-reversible vault cleanup — dead-link scan, semantic near-duplicate detection, directory archiving. Read-only analyze, human-gated apply with a full diff preview</li>
+        </ul>
+      </div>
+
+      <div class="release old">
         <div class="ver">v1.3.5 <span class="date">2026-06-08</span> <span class="tag">latest</span></div>
         <ul class="changes">
           <span class="cat">// daemon idle-shutdown</span>
@@ -1063,7 +1169,7 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s shot">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 10 ] / INSIDE</div>
+      <div class="sec-num">[ 11 ] / INSIDE</div>
       <h2 class="sec-title">What it looks like <span class="dim">when it's running.</span></h2>
     </div>
     <div class="body">
@@ -1086,7 +1192,7 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s tech">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 11 ] / TECH</div>
+      <div class="sec-num">[ 12 ] / TECH</div>
       <h2 class="sec-title">For the devs <span class="dim">who want to know.</span></h2>
     </div>
     <div class="row">
@@ -1113,11 +1219,16 @@ last Tuesday?<span class="blink"></span></pre>
       <div class="cell">
         <div class="k">// transport</div>
         <div class="v">FastMCP</div>
-        <div class="note">Speaks Model Context Protocol over stdio.</div>
+        <div class="note">MCP over stdio — proxied into the shared daemon. <code>--direct</code> for in-process fallback.</div>
+      </div>
+      <div class="cell">
+        <div class="k">// daemon</div>
+        <div class="v">streamable-http</div>
+        <div class="note">Loopback-only, bearer token + Origin allow-list, idle-shutdown, single-writer index lock.</div>
       </div>
     </div>
     <div class="stack-line">
-      stack ::= <b>Python</b> · <b>FAISS</b> · <b>SQLite FTS5</b> · <b>SentenceTransformers</b> · <b>FastMCP</b> · content-addressable storage with versioning.
+      stack ::= <b>Python</b> · <b>FAISS</b> · <b>SQLite FTS5</b> · <b>SentenceTransformers</b> · <b>FastMCP</b> · shared daemon · content-addressable storage with versioning.
     </div>
   </div>
 </section>
@@ -1125,7 +1236,7 @@ last Tuesday?<span class="blink"></span></pre>
 <section class="s download" id="download">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">[ 12 ] / GET IT</div>
+      <div class="sec-num">[ 13 ] / GET IT</div>
       <h2 class="sec-title" style="opacity:0">.</h2>
     </div>
     <h2>Stop re-explaining. <span class="dim">Start where you left off.</span></h2>
@@ -1162,7 +1273,7 @@ last Tuesday?<span class="blink"></span></pre>
         <b>// gystc</b>
         get your shit together,<br>
         claude. v1.3.5 — 2026.<br>
-        local-first MCP server.
+        local-first memory daemon.
       </div>
       <div class="col">
         <b>// links</b>
