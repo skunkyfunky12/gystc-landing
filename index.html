@@ -29,7 +29,7 @@
       "description": "A local memory daemon that gives Claude persistent long-term memory across sessions, projects, and months. One shared brain process, every client plugs in. Local-first, no cloud, no telemetry.",
       "url": "https://gystc.dev",
       "image": "https://gystc.dev/gystc-dashboard.jpg",
-      "softwareVersion": "1.3.5",
+      "softwareVersion": "1.4.0",
       "downloadUrl": "https://github.com/skunkyfunky12/gystc/releases/latest",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     },
@@ -505,7 +505,7 @@
   <div class="wrap row">
     <div class="left">
       <span><span class="dot"></span><b>GYSTC</b></span>
-      <span class="hide-sm">v1.3.5 — stable</span>
+      <span class="hide-sm">v1.4.0 — stable</span>
       <span class="hide-sm pipe">/</span>
       <span class="hide-sm">memory daemon / persistent context</span>
     </div>
@@ -527,7 +527,7 @@
   <div class="wrap">
     <div class="meta">
       <span>FILE: index.html</span>
-      <span class="hide-sm">BUILD: 1.3.5 / 2026-06</span>
+      <span class="hide-sm">BUILD: 1.4.0 / 2026-06</span>
       <span class="hide-sm">TARGET: claude desktop / cli</span>
       <span>FREE · SOURCE PUBLIC ON GITHUB</span>
     </div>
@@ -1016,7 +1016,7 @@ agent        ──>  proxy ─┘
     <div class="timeline">
 
       <div class="release">
-        <div class="ver">v1.4.0 <span class="date">2026-06</span> <span class="tag">next</span></div>
+        <div class="ver">v1.4.0 <span class="date">2026-06-11</span> <span class="tag">latest</span></div>
         <ul class="changes">
           <span class="cat">// full hardening pass — 3 adversarial audit rounds</span>
           <li class="breaking">43 verified findings closed across lifecycle, index integrity, curation, daemon and dashboard — each one adversarially confirmed before the fix, each fix pinned by a regression test. Suite grew 243 → 408 tests</li>
@@ -1028,7 +1028,7 @@ agent        ──>  proxy ─┘
       </div>
 
       <div class="release old">
-        <div class="ver">v1.3.5 <span class="date">2026-06-08</span> <span class="tag">latest</span></div>
+        <div class="ver">v1.3.5 <span class="date">2026-06-08</span></div>
         <ul class="changes">
           <span class="cat">// daemon idle-shutdown</span>
           <li>The shared daemon now self-terminates after <code>--idle</code> seconds (default 1800) of no activity — freeing the embedding model + index from RAM. The proxy transparently respawns it on the next call, so it stays invisible to clients</li>
@@ -1391,7 +1391,7 @@ agent        ──>  proxy ─┘
       <div class="col">
         <b>// gystc</b>
         get your shit together,<br>
-        claude. v1.3.5 — 2026.<br>
+        claude. v1.4.0 — 2026.<br>
         local-first memory daemon.
       </div>
       <div class="col">
